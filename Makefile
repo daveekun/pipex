@@ -12,7 +12,7 @@ ARG		=	file1 cmd1 cmd2 file2
 all: $(NAME)
 
 $(NAME): $(LIB) $(OBJ)
-	@cc $(FLAGS) $(OBJ) -o $(NAME)
+	@cc $(FLAGS) $(OBJ) $(LIB) -o $(NAME)
 	@echo "compiling $@"
 
 $(LIB):
@@ -22,7 +22,7 @@ run: $(NAME)
 	@./$(NAME) $(ARG)
 
 %.o: %.c
-	@cc $(FLAGS) -c $< -o $@ -I $(LIBFT)/includes
+	@cc $(FLAGS) -c $< -I $(LIBFT)includes -o $@
 	@echo "compiling file $@"
 
 clean:
