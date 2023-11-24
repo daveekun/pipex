@@ -7,7 +7,7 @@ LIB		=	$(LIBFT)libft.a
 SRC		=	main.c
 OBJ		=	$(SRC:.c=.o)
 
-ARG		=	file1 cmd1 cmd2 file2
+ARG		=	in.txt outfile
 
 all: $(NAME)
 
