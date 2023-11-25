@@ -7,7 +7,7 @@ LIB		=	$(LIBFT)libft.a
 SRC		=	main.c
 OBJ		=	$(SRC:.c=.o)
 
-ARG		=	in.txt outfile
+ARG		=	in.txt "grep ass" "wc -l" outfile
 
 all: $(NAME)
 
