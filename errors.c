@@ -6,9 +6,11 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 20:38:50 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/11/30 20:38:58 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/04 22:25:24 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "libft.h"
 
 int	error_return(int ret)
 {

@@ -6,19 +6,30 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 20:37:53 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/11/30 20:38:26 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/08 17:22:13 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char *find_command(char **args)
+char	*get_path(char **env)
+{
+	int i;
+
+	i = 0;
+	while (env[i])
+		i++;
+	return ("Users/dhorvath/lbin/bin/:/usr/local/bin/:/usr/bin/:/bin/:/usr/sbin/:/sbin/:/usr/local/munki/");
+}
+
+char *find_command(char **args, char **env)
 {
 	char	**locations;
 	int		path_index;
 	char	*c_path;
+	const char	*path = get_path(env);
 
-	locations = ft_split("/usr/local/bin/:/usr/bin/:/bin/:/usr/sbin/:/sbin/", ':');
+	locations = ft_split(path, ':');
 	path_index = 0;
 	while (locations[path_index])
 	{

@@ -6,7 +6,7 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 20:29:24 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/11/30 20:36:17 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/08 17:22:54 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@
 # include "libft/includes/ft_printf.h"
 # include "libft/includes/libft.h"
 # include <fcntl.h>
+# include <errno.h>
 
 typedef struct s_command
 {
 	char		**params;
-	char *const	env[1];
+	char 		**env;
+	char 		*path;
 }	t_command;
 
-char	*find_command(char **args);
-int		error_return(int ret);
-int		output_function(int pipefd[2], char *outfile, int pid, t_command cmd);
-int		input_function(int pipefd[2], char *infile, int pid, t_command cmd);
-
+char *find_command(char **args, char **env);
+void	call_command(int fds[2], t_command cmd, int *pids, int i);
+void wait_for_commands(pid_t *pids, int max);
 #endif
