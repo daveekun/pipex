@@ -6,7 +6,7 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 20:29:24 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/08 17:22:54 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/10 15:27:38 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <unistd.h>
 # include <sys/types.h>
+# include <stdio.h>
 # include "libft/includes/ft_printf.h"
 # include "libft/includes/libft.h"
 # include <fcntl.h>

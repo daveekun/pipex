@@ -6,7 +6,7 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 13:12:48 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/08 17:23:28 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/10 15:24:27 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int get_fds(int i, char **argv, int argc, int fd[2], int *prev_out)
 
 	if (i == argc - 4)
 	{
-		fd[1] = open(argv[argc - 1], O_WRONLY);
+		fd[1] = open(argv[argc - 1], O_WRONLY | O_CREAT);
 		if (fd[1] == -1)
 			return (1);
 		fd[0] = *prev_out;
@@ -29,8 +29,8 @@ int get_fds(int i, char **argv, int argc, int fd[2], int *prev_out)
 		if (pipe(pipefd) == -1)
 			return (1);
 		fd[0] = *prev_out;
-		fd[1] = pipefd[0];
-		*prev_out = pipefd[1];
+		fd[1] = pipefd[1];
+		*prev_out = pipefd[0];
 	}
 	if (i == 0)
 	{
@@ -62,7 +62,7 @@ int main(int argc, char **argv, char **env)
 	t_command cmd;
 
 	if (argc != 5)
-		return 1;
+		return (print_error());
 	pids = ft_calloc(argc - 2, sizeof(pid_t));
 	prev_out = 0;
 	cmd.env = env;
@@ -74,9 +74,8 @@ int main(int argc, char **argv, char **env)
 			return (print_error());
 		if (get_fds(i, argv, argc, fds, &prev_out) == 1)
 			return (print_error());
-		call_command(fds, cmd, pids, i);
+		call_command(fds, cmd, pids, i++);
 		free_args(cmd.params);
-		i++;
 	}
 	close(prev_out);
 	wait_for_commands(pids, i);
@@ -84,8 +83,8 @@ int main(int argc, char **argv, char **env)
 
 int print_error(void)
 {
-	 ft_printf("An error has occured\n");
-	 return (1);
+	perror("An error occured");
+	return (1);
 }
 
 void wait_for_commands(pid_t *pids, int max)
@@ -94,23 +93,23 @@ void wait_for_commands(pid_t *pids, int max)
 	int	*status;
 
 	status = ft_calloc(max + 1, sizeof(int));
+	if (!status)
+		return (print_error());
 	i = 0;
 	while (pids[i])
 	{
-		if (waitpid(pids[i], &status[i], WCONTINUED) < 1)
-		{
-			print_error();
-			exit(0);
-		}
+		waitpid(pids[i], &status[i], 1);
 		i++;
 	}
+	free(pids);
+	free(status);
+	exit(0);
 }
 
 void	call_command(int fds[2], t_command cmd, int *pids, int i)
 {
 	char *path;
 	pid_t pid;
-	int		ret;
 
 	pid = fork();
 	if (pid == 0)
@@ -118,12 +117,17 @@ void	call_command(int fds[2], t_command cmd, int *pids, int i)
 		path = find_command(cmd.params, cmd.env);
 		dup2(fds[0], 0);
 		dup2(fds[1], 1);
-		ret = execve(path, cmd.params, cmd.env) == -1;
+		execve(path, cmd.params, cmd.env);
 		close(fds[0]);
-		if (ret == -1)
-			print_error();
 		exit(0);
 	}
 	else if (pid > 0)
+	{
+		if (!pids)
+		{
+			print_error();
+			exit(0);
+		}
 		pids[i] = pid;
+	}
 }
