@@ -6,7 +6,7 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 20:29:24 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/10 15:27:38 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/11 15:22:39 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,5 @@ typedef struct s_command
 
 char *find_command(char **args, char **env);
 void	call_command(int fds[2], t_command cmd, int *pids, int i);
-void wait_for_commands(pid_t *pids, int max);
+void wait_for_commands(pid_t *pids);
 #endif
