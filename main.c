@@ -6,7 +6,7 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 13:12:48 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/11 15:23:57 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/11 15:36:46 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int main(int argc, char **argv, char **env)
 		if (get_fds(i, argv, argc, fds, &prev_out) == 1)
 			return (print_error());
 		call_command(fds, cmd, pids, i++);
-		close(fds[0]);
+		close(fds[1]);
 		free_args(cmd.params);
 	}
 	close(prev_out);
@@ -96,12 +96,9 @@ void wait_for_commands(pid_t *pids)
 	i = 0;
 	while (pids[i])
 	{
-		if (waitpid(pids[i], &status, 1) == -1)
-		{
-			print_error();
-			break ;
-		}
+		waitpid(pids[i], &status, 0);
 		i++;
+		ft_printf("fuck\n");
 	}
 	free(pids);
 	exit(0);
@@ -120,7 +117,7 @@ void	call_command(int fds[2], t_command cmd, int *pids, int i)
 		dup2(fds[1], 1);
 		execve(path, cmd.params, cmd.env);
 		close(fds[0]);
-		exit(print_error());
+		exit(1);
 	}
 	else if (pid > 0)
 	{
