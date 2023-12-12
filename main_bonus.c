@@ -1,18 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 13:12:48 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/12 19:26:45 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/12 18:43:52 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 int print_error(char **params);
-char **arg_split(char *s, char c);
 
 int get_fds(int i, char **argv, int argc, int fd[2], int *prev_out)
 {
@@ -20,7 +19,7 @@ int get_fds(int i, char **argv, int argc, int fd[2], int *prev_out)
 
 	if (i == argc - 4)
 	{
-		fd[1] = open(argv[argc - 1],  O_TRUNC | O_WRONLY | O_CREAT, 0644);
+		fd[1] = open(argv[argc - 1], O_TRUNC | O_WRONLY | O_CREAT, 0644);
 		if (fd[1] == -1)
 			return (1);
 		fd[0] = *prev_out;
@@ -56,7 +55,7 @@ void free_args(char **s)
 
 int print_usage(void)
 {
-	ft_printf("Usage: ./pipex infile cmd1 cmd2 outfile\n");
+	ft_printf("Usage: ./pipex infile cmd1 cmd2 ... cmdn outfile\n");
 	return (0);
 }
 
@@ -68,7 +67,7 @@ int main(int argc, char **argv, char **env)
 	pid_t	*pids;
 	t_command cmd;
 
-	if (argc != 5)
+	if (argc < 4)
 		return (print_usage());
 	pids = ft_calloc(argc - 2, sizeof(pid_t));
 	prev_out = 0;
@@ -78,7 +77,7 @@ int main(int argc, char **argv, char **env)
 	{
 		cmd.params = ft_split(argv[i + 2], ' ');
 		if (!cmd.params)
-			return (print_error(cmd.params));
+			return (print_error(0));
 		if (get_fds(i, argv, argc, fds, &prev_out) == 1)
 			return (print_error(cmd.params));
 		call_command(fds, cmd, pids, i++);
@@ -143,71 +142,4 @@ void	call_command(int fds[2], t_command cmd, int *pids, int i)
 		}
 		pids[i] = pid;
 	}
-}
-
-int skip_til(char c, char *s)
-{
-	int i;
-
-	i = 1;
-	while (s[i-1] && s[i])
-	{
-		if (s[i] == c)
-			return (i);
-		i++;
-	}
-	return (0);
-}
-
-int count_args(char *s, char c)
-{
-	int i;
-	int old_i;	
-	int words;
-
-	words = 0;
-	i = 0;
-	while (s[i])
-	{
-		while (s[i] && s[i] == c)
-			i++;
-		old_i = i;
-		while (s[i] && s[i] != c)
-		{
-			if (s[i] == '\'' || s[i] == '\"')
-				i += skip_til(s[i], &s[i]);
-			i++;
-		}
-		if (i != old_i)
-			words++;
-	}
-	return (words);
-}
-
-char **arg_split(char *s, char c)
-{
-	int c_words = 0;
-	int i;
-	int old_i;
-	char **res;
-
-	i = 0;
-	res = ft_calloc(count_args(s, c) + 1, sizeof(char *));
-	while (s[i])
-	{
-		while (s[i] && s[i] == c)
-			i++;
-		old_i = i;
-		while (s[i] && s[i] != c)
-		{
-			if (s[i] == '\'' || s[i] == '\"')
-				i += skip_til(s[i], &s[i]);
-			i++;
-		}
-		if (i != old_i)
-			res[c_words++] = ft_substr(s, old_i, i - old_i);
-		if (!res[c_words - 1])
-			free_args(res);
-	}
-	return (res);
 }
