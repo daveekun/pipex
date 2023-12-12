@@ -6,20 +6,37 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 20:37:53 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/08 17:22:13 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/12 12:20:02 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*get_path(char **env)
+static char	*get_path(char **env)
 {
 	int i;
 
 	i = 0;
 	while (env[i])
+	{
+		if (ft_strncmp(env[i], "PATH=", 5) == 0)
+			return (env[i]);
 		i++;
-	return ("Users/dhorvath/lbin/bin/:/usr/local/bin/:/usr/bin/:/bin/:/usr/sbin/:/sbin/:/usr/local/munki/");
+	}
+	return (0);
+}
+
+static char **fix_path(char **locations)
+{
+	int	i;
+
+	i = 0;
+	while (locations && locations[i])
+	{
+		locations[i] = ft_strjoin(locations[i], "/");
+		i++;
+	}
+	return (locations);
 }
 
 char *find_command(char **args, char **env)
@@ -29,9 +46,9 @@ char *find_command(char **args, char **env)
 	char	*c_path;
 	const char	*path = get_path(env);
 
-	locations = ft_split(path, ':');
+	locations = fix_path(ft_split(path, ':'));
 	path_index = 0;
-	while (locations[path_index])
+	while (locations && locations[path_index])
 	{
 		c_path = ft_strjoin(locations[path_index], args[0]);
 		if (!c_path)

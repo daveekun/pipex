@@ -6,7 +6,7 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 13:12:48 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/11 15:36:46 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/12 14:02:45 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,16 +92,19 @@ void wait_for_commands(pid_t *pids)
 {
 	int i;
 	int	status;
+	int exit_status;
 
 	i = 0;
+	status = 0;
 	while (pids[i])
 	{
 		waitpid(pids[i], &status, 0);
+		if (WIFEXITED(status))
+			exit_status = WEXITSTATUS(status);
 		i++;
-		ft_printf("fuck\n");
 	}
 	free(pids);
-	exit(0);
+	exit(exit_status);
 }
 
 void	call_command(int fds[2], t_command cmd, int *pids, int i)
@@ -113,11 +116,14 @@ void	call_command(int fds[2], t_command cmd, int *pids, int i)
 	if (pid == 0)
 	{
 		path = find_command(cmd.params, cmd.env);
+		if (!path)
+		{
+			ft_printf("command not found: %s\n", cmd.params[0]);
+			exit(1);
+		}
 		dup2(fds[0], 0);
 		dup2(fds[1], 1);
 		execve(path, cmd.params, cmd.env);
-		close(fds[0]);
-		exit(1);
 	}
 	else if (pid > 0)
 	{
