@@ -6,13 +6,11 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 13:12:48 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/12 19:26:45 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/13 18:24:30 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-int print_error(char **params);
-char **arg_split(char *s, char c);
 
 int get_fds(int i, char **argv, int argc, int fd[2], int *prev_out)
 {
@@ -76,7 +74,7 @@ int main(int argc, char **argv, char **env)
 	i = 0;
 	while (i < argc - 3)
 	{
-		cmd.params = ft_split(argv[i + 2], ' ');
+		cmd.params = arg_split(argv[i + 2], ' ');
 		if (!cmd.params)
 			return (print_error(cmd.params));
 		if (get_fds(i, argv, argc, fds, &prev_out) == 1)
@@ -92,7 +90,7 @@ int main(int argc, char **argv, char **env)
 int print_error(char **params)
 {
 	free_args(params);
-	perror("An error occured");
+	perror("pipex");
 	return (1);
 }
 
@@ -109,10 +107,11 @@ void wait_for_commands(pid_t *pids)
 		waitpid(pids[i], &status, 0);
 		if (WIFEXITED(status))
 			exit_status = WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+			exit_status = WTERMSIG(status);
 		i++;
 	}
 	free(pids);
-	ft_printf("exit status: %i\n", exit_status);
 	exit(exit_status);
 }
 
@@ -143,71 +142,4 @@ void	call_command(int fds[2], t_command cmd, int *pids, int i)
 		}
 		pids[i] = pid;
 	}
-}
-
-int skip_til(char c, char *s)
-{
-	int i;
-
-	i = 1;
-	while (s[i-1] && s[i])
-	{
-		if (s[i] == c)
-			return (i);
-		i++;
-	}
-	return (0);
-}
-
-int count_args(char *s, char c)
-{
-	int i;
-	int old_i;	
-	int words;
-
-	words = 0;
-	i = 0;
-	while (s[i])
-	{
-		while (s[i] && s[i] == c)
-			i++;
-		old_i = i;
-		while (s[i] && s[i] != c)
-		{
-			if (s[i] == '\'' || s[i] == '\"')
-				i += skip_til(s[i], &s[i]);
-			i++;
-		}
-		if (i != old_i)
-			words++;
-	}
-	return (words);
-}
-
-char **arg_split(char *s, char c)
-{
-	int c_words = 0;
-	int i;
-	int old_i;
-	char **res;
-
-	i = 0;
-	res = ft_calloc(count_args(s, c) + 1, sizeof(char *));
-	while (s[i])
-	{
-		while (s[i] && s[i] == c)
-			i++;
-		old_i = i;
-		while (s[i] && s[i] != c)
-		{
-			if (s[i] == '\'' || s[i] == '\"')
-				i += skip_til(s[i], &s[i]);
-			i++;
-		}
-		if (i != old_i)
-			res[c_words++] = ft_substr(s, old_i, i - old_i);
-		if (!res[c_words - 1])
-			free_args(res);
-	}
-	return (res);
 }

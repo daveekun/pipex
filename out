@@ -1,0 +1,15 @@
+Makefile
+arg_split.c
+arg_split.o
+find_command.c
+find_command.o
+in
+libft
+ls
+main.c
+main.o
+main_bonus.c
+main_bonus.o
+out
+pipex
+pipex.h

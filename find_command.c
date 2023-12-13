@@ -6,13 +6,14 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 20:37:53 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/12 18:43:14 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/13 18:28:31 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
 static char *free_and_null(char **locations);
+static char *free_and_null_end(char **locations, char **args);
 
 static char	*get_path(char **env)
 {
@@ -22,7 +23,11 @@ static char	*get_path(char **env)
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], "PATH=", 5) == 0)
+		{
+			if (env[i][5]=='\0')
+			 	return (0);
 			return (env[i]);
+		}
 		i++;
 	}
 	return (0);
@@ -34,6 +39,8 @@ static char **fix_path(char **locations)
 	char *temp;
 
 	i = 0;
+	if (!locations)
+		return (0);
 	while (locations && locations[i])
 	{
 		temp = locations[i];
@@ -78,7 +85,7 @@ char *find_command(char **args, char **env)
 			free(c_path);
 		path_index++;
 	}
-	return (free_and_null((char **)locations));
+	return (free_and_null_end((char **)locations, args));
 }
 
 static char *free_and_null(char **locations)
@@ -86,8 +93,21 @@ static char *free_and_null(char **locations)
 	int path_index;
 
 	path_index = 0;
-	while (locations[path_index])
+	while (locations && locations[path_index])
 		free((void *)locations[path_index++]);
 	free((void *)locations);
+	return (0);
+}
+
+static char *free_and_null_end(char **locations, char **args)
+{
+	int path_index;
+
+	path_index = 0;
+	while (locations && locations[path_index])
+		free((void *)locations[path_index++]);
+	free((void *)locations);
+	if (access(args[0], F_OK) == 0)
+		return (args[0]);
 	return (0);
 }

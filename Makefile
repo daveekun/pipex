@@ -4,8 +4,8 @@ FLAGS	=	-Wall -Wextra -Werror
 
 LIBFT	= 	libft/
 LIB		=	$(LIBFT)libft.a
-SRC		=	main.c find_command.c
-SRC_B	=	main_bonus.c find_command.c
+SRC		=	main.c find_command.c arg_split.c
+SRC_B	=	main_bonus.c find_command.c arg_split.c
 OBJ		=	$(SRC:.c=.o)
 OBJ_B	=	$(SRC_B:.c=.o)
 ARG		=	in.txt "grep ass" "wc -l" outfile
