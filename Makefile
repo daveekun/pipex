@@ -1,7 +1,7 @@
 NAME	=	pipex
 FLAGS	=	-Wall -Wextra -Werror
 
-LIBFT	= 	libft/
+LIBFT	= 	libft_p/
 LIB		=	$(LIBFT)libft.a
 MAIN	=	src/main.c
 MAIN_B	=	src/main_bonus.c
