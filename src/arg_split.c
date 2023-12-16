@@ -6,18 +6,19 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 19:43:48 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/12 20:27:00 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/16 16:54:35 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include "libft.h"
 
-int skip_til(char c, char *s)
+int	skip_til(char c, char *s)
 {
-	int i;
+	int	i;
 
 	i = 1;
-	while (s[i-1] && s[i])
+	while (s[i - 1] && s[i])
 	{
 		if (s[i] == c)
 			return (i);
@@ -26,11 +27,11 @@ int skip_til(char c, char *s)
 	return (0);
 }
 
-int count_args(char *s, char c)
+int	count_args(char *s, char c)
 {
-	int i;
-	int old_i;	
-	int words;
+	int	i;
+	int	old_i;	
+	int	words;
 
 	words = 0;
 	i = 0;
@@ -51,14 +52,15 @@ int count_args(char *s, char c)
 	return (words);
 }
 
-char **arg_split(char *s, char c)
+char	**arg_split(char *s, char c)
 {
-	int c_words = 0;
-	int i;
-	int old_i;
-	char **res;
+	int		c_words;
+	int		i;
+	int		old_i;
+	char	**res;
 
 	i = 0;
+	c_words = 0;
 	res = ft_calloc(count_args(s, c) + 1, sizeof(char *));
 	while (s[i])
 	{
