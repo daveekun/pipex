@@ -13,7 +13,7 @@ OBJ		=	$(addprefix $(OBJ_DIR), $(notdir $(SRC:.c=.o)))
 
 all: $(NAME)
 
-$(NAME): $(OBJ_DIR) $(LIB) $(OBJ)
+$(NAME): $(OBJ_DIR) $(MAIN) $(LIB) $(OBJ)
 	@cc $(FLAGS) $(MAIN) $(OBJ) $(LIB) -I $(LIBFT)includes -I include/ -o $(NAME)
 	@echo "compiling pipex"
 
@@ -29,7 +29,7 @@ $(OBJ_DIR):
 
 bonus: .bonus
 
-.bonus: $(LIB) $(OBJ_B) | $(OBJ_DIR) 
+.bonus: $(LIB) $(OBJ_DIR) $(OBJ) 
 	@cc $(FLAGS) $(MAIN_B) $(OBJ) $(LIB) -I $(LIBFT)includes -I include/ -o $(NAME)
 	@echo "compiling pipex bonus"
 	@touch .bonus
@@ -37,11 +37,10 @@ bonus: .bonus
 clean:
 	@rm -rf $(OBJ) $(OBJ_B)
 	@rm -rf $(OBJ_DIR)
-	@make clean -C $(LIBFT)
+	@make fclean -C $(LIBFT)
 	@rm -rf .bonus
 
 fclean: clean
-	@make fclean -C $(LIBFT)
 	@rm -rf $(NAME)
 
 re: fclean all
