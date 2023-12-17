@@ -6,17 +6,11 @@
 /*   By: dhorvath <dhorvath@hive.student.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 16:19:04 by dhorvath          #+#    #+#             */
-/*   Updated: 2023/12/16 17:07:31 by dhorvath         ###   ########.fr       */
+/*   Updated: 2023/12/17 13:32:51 by dhorvath         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-int	open_if_fail(char *path, int ret)
-{
-	open(path, O_CREAT, 0644);
-	return (ret);
-}
 
 int	get_fds(int i, t_args args, int fd[2], int *prev_out)
 {
@@ -41,7 +35,7 @@ int	get_fds(int i, t_args args, int fd[2], int *prev_out)
 	{
 		fd[0] = open(args.v[1], O_RDONLY);
 		if (fd[0] == -1)
-			return (open_if_fail(args.v[args.c - 1], 1));
+			return (1);
 	}
 	return (0);
 }
