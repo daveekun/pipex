@@ -22,6 +22,8 @@ SRC = $(addprefix src/, $(SRC_LIB) $(SRC_GNL) $(SRC_PRINTF))
 
 OBJ = $(OBJ_GNL) $(OBJ_LIB) $(OBJ_PRINTF)
 
+OBJ_DIR = obj/
+
 OBJDIR_GNL = obj/gnl/
 OBJDIR_LIBFT = obj/libft/
 OBJDIR_PRF = obj/ft_printf/
@@ -30,33 +32,39 @@ FLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 
-$(NAME): $(OBJ) 
-	ar rus $(NAME) $(OBJ)
+$(NAME): $(OBJ_DIR) $(OBJDIR_GNL) $(OBJDIR_LIBFT) $(OBJDIR_PRF) $(OBJ)
+	@ar rus $(NAME) $(OBJ)
 
-$(OBJ): $(OBJDIR_GNL) $(OBJDIR_LIBFT) $(OBJDIR_PRF)
+$(OBJ_DIR):
+	@mkdir $(OBJ_DIR)
 
 $(OBJDIR_GNL):
-	mkdir $(OBJDIR_GNL)
+	@mkdir $(OBJDIR_GNL)
 
 $(OBJDIR_PRF):
-	mkdir $(OBJDIR_PRF)
+	@mkdir $(OBJDIR_PRF)
 
 $(OBJDIR_LIBFT):
-	mkdir $(OBJDIR_LIBFT)
+	@mkdir $(OBJDIR_LIBFT)
 
 $(OBJDIR_PRF)%.o: src/ft_printf/%.c 
-	$(CC) $(FLAGS) -c -o $@ $< -I includes/
+	@$(CC) $(FLAGS) -c -o $@ $< -I includes/
+	@echo "compiling $@"
 
 $(OBJDIR_GNL)%.o: src/gnl/%.c
-	$(CC) $(FLAGS) -c -o $@ $< -I includes/
+	@$(CC) $(FLAGS) -c -o $@ $< -I includes/
+	@echo "compiling $@"
 
 $(OBJDIR_LIBFT)%.o: src/libft/*/%.c
-	$(CC) $(FLAGS) -c -o $@ $< -I includes/
+	@$(CC) $(FLAGS) -c -o $@ $< -I includes/
+	@echo "compiling $@"
 
 clean:
-	rm -rf $(OBJ)
+	@rm -rf $(OBJ)
+	@echo "clean $(NAME)"
 
 fclean: clean
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
+	@echo "fclean $(NAME)"
 
 re: fclean all
